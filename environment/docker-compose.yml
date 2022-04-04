@@ -1,0 +1,71 @@
+version: "3.7"
+
+services:
+    db:
+        container_name: ${DB_CONTAINER_NAME}
+        image: postgres:${POSTGRES_VERSION}-alpine
+        restart: on-failure
+        ports:
+            - ${FORWARDED_PORT_DB}:5432
+        environment:
+            POSTGRES_DB: ${POSTGRES_DB}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_USER: ${POSTGRES_USER}
+        volumes:
+            - ${DB_DATA}:/var/lib/postgresql/data:rw
+
+    php-fpm:
+        container_name: ${BACK_CONTAINER_NAME}
+        restart: on-failure
+        build:
+            context: ./php-fpm
+            dockerfile: Dockerfile
+        ports:
+            - ${FORWARDED_PORT_PHP}:9003
+        environment:
+            PHP_INI_SCAN_DIR: /usr/local/etc/php/custom.d:/usr/local/etc/php/conf.d
+            EXCLUDES: .svn:.git:.docker
+        volumes:
+            - ${PHP_CFG_PATH}:/usr/local/etc/php/custom.d
+            - ${SYMFONY_APP_PATH}:/app:cached
+        working_dir: /app
+        depends_on:
+            - db
+
+    nginx:
+        container_name: ${NGINX_CONTAINER_NAME}
+        image: nginx:alpine
+        restart: on-failure
+        build:
+            context: ./nginx
+            dockerfile: Dockerfile
+        ports:
+            - ${FORWARDED_PORT_NGINX}:80
+        environment:
+            EXCLUDES: .svn:.git:.docker
+        volumes:
+            - ${SYMFONY_APP_PATH}:/app:consistent
+            - ./nginx/website.conf:/etc/nginx/conf.d/default.conf:ro
+            - ${NGINX_LOGS_PATH}:/var/log/nginx
+        working_dir: /app
+        depends_on:
+            - php-fpm
+
+    mailer:
+        container_name: ${MAILER_CONTAINER_NAME}
+        image: mailhog/mailhog
+        restart: on-failure
+        ports:
+            - ${FORWARDED_PORT_MAILER}:8025
+        volumes:
+            - ${MAIL_LOGS_PATH}:/var/log/mail:cached
+        depends_on:
+            - nginx
+            - php-fpm
+
+    rabbit:
+        container_name: ${RABBITMQ_CONTAINER_NAME}
+        image: rabbitmq:3.9-management
+        ports:
+            - ${FORWARDED_PORT_RABBITMQ}:5672
+            - ${FORWARDED_PORT_RABBITMQ_ADMIN}:15672

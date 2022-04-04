@@ -1,0 +1,6 @@
+App\Entity\Notification:
+  notification_{1..100}:
+    client: '@client_*'
+    channel: <randomElement(['sms', 'email'])>
+    content: <text(100)>
+    isSent: <randomElement([true, false])>

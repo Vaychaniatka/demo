@@ -1,0 +1,6 @@
+App\Entity\User:
+  user1:
+    username: username
+    password: '\$2y\$13\$FxaSbDAqKowVPf7uQRVCj.LmQLbHYXNTxYffxtyCDaIfj7nKFitxS'
+    token: API_TOKEN
+    roles: ["ROLE_ADMIN", "ROLE_USER"]

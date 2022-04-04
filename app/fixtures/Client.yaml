@@ -1,0 +1,6 @@
+App\Entity\Client:
+  client_{1..100}:
+    firstName: <firstName()>
+    lastName: <lastName()>
+    email (unique): <email()>
+    phoneNumber (unique): <e164PhoneNumber()>
