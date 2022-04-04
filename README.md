@@ -16,3 +16,13 @@ i.e. [demo-api.local/api](http://demo-api.local/api) by default
 
 ## What about credentials?
 As `make build` command loads fixtures, you can simply use **API_TOKEN** as **X-API-TOKEN**
+
+## RabbitMQ
+Use the next command to collecting and displaying messages in your terminal:
+`docker exec -it php-fpm bin/console messenger:consume async -vv`
+
+You can access [RabbitMQ dashboard](http://localhost:15672), use `guest` as username/password
+
+## Notifications
+
+You can check notifications via [mailhog](http://localhost:8025) 
