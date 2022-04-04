@@ -14,7 +14,7 @@ build:
 	docker-compose up --build -d
 	make composer-install
 	docker exec -it php-fpm bin/console doctrine:migrations:migrate  --no-interaction
-	docker exec -it php-fpm bin/console hautelook:fixtures:load
+	docker exec -it php-fpm bin/console hautelook:fixtures:load --no-interaction
 
 composer-install:
 	docker exec -it php-fpm composer install
