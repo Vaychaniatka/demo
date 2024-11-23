@@ -26,3 +26,5 @@ You can access [RabbitMQ dashboard](http://localhost:15672), use `guest` as user
 ## Notifications
 
 You can check notifications via [mailhog](http://localhost:8025) 
+
+## Check
